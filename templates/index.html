@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Object Detection with YOLOv5</title>
+	<!-- <link rel="stylesheet" href="https://unpkg.com/tailwindcss/dist/tailwind.min.css"> -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		.card {
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+			border-radius: 5px;
+			padding: 20px;
+			margin: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+	</style>
+</head>
+<body>
+	<div class="card">
+		<h1 class="text-3xl mb-4">Object Detection with YOLOv5</h1>
+		<form method="POST" enctype="multipart/form-data">
+			<input type="file" name="image" accept="image/*" onchange="document.getElementById('submit').click();">
+			<button id="submit" class="hidden">Submit</button>
+		</form>
+		<div id="result"></div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script>
+		$(document).ready(function()){
+			$('form').on('submit', function(e){
+				e.preventDefault();
+				$.ajax({
+					url: '/',
+					method: 'POST',
+					data: new FormData($('form')[0]),
+					processData: false,
+					contentType: false,
+					success: function(response){
+						var detections = JSON.parse(response);
+						var result = '';
+						detections.forEach(function(detection){
+							var label = detection.class;
+							var score = detection.score.toFixed(2);
+							var x1 = detection.x1.toFixed(2);
+							var y1 = detection.y1.toFixed(2);
+							var x2 = detection.x2.toFixed(2);
+							var y2 = detection.y2.toFixed(2);
+							result += '<p>Label: ' + label + ' - Score: ' + score + '</p>';
+							result += '</img>';
+						}
+					}
+				
+				})
+			})
+		}
+
+
+							
